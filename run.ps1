@@ -43,7 +43,9 @@ $user.save()
 
 cp slave.ps1 $homefull | Out-Null
 
+$perms = ( $username + ":(OI)(CI)F" )
 icacls $homefull /setowner $username /T /L | out-null
+icacls $homefull /grant $perms /T | out-null
 
 # ------------------------------------------------------------------
 Write-Verbose "Starting sub-process as new user..."
