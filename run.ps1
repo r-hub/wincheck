@@ -1,6 +1,11 @@
 
 [CmdletBinding()]
-Param()
+Param(
+    [Parameter(Mandatory=$True,Position=1)]
+    [string]$URL
+)
+
+Write-Verbose ( "Checking " + $URL )
 
 # ------------------------------------------------------------------
 
@@ -45,7 +50,7 @@ Write-Verbose "Starting sub-process as new user..."
 
 $StartInfo = New-Object System.Diagnostics.ProcessStartInfo -Property @{
                FileName = 'powershell.exe'
-	       Arguments = '-command .\slave.ps1'
+	       Arguments = ( '-command .\slave.ps1' + ' ' + $URL )
 	       UseShellExecute = $false
 	       RedirectStandardOutput = $true
 	       RedirectStandardError = $true
