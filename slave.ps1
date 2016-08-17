@@ -1,28 +1,50 @@
 
 [CmdletBinding()]
 Param(
-    [Parameter(Mandatory=$True,Position=1)]
-    [string]$URL
+    [Parameter(Mandatory = $True, Position = 1)]
+    [string]$Filename,
+    [Parameter(Mandatory = $True, Position = 2)]
+    [string]$Pkgname
 )
+
+# --------------------------------------------------------------------
+Write-Verbose "Setting up R Environment..."
 
 $R = 'C:\Program Files\R\R-devel\bin\R'
 
-# --------------------------------------------------------------------
-Write-Verbose ( "Downloading " + $URL )
+# We need to set this, otherwise R never finds the profile
+Set-Variable home (pwd).toString() -Force
+(get-psprovider 'FileSystem').Home = $home
+[system.environment]::SetEnvironmentVariable("home", "$home") 
 
+mkdir R -ErrorAction SilentlyContinue | out-null
 
-$filename = $URL.Substring($URL.LastIndexOf("/") + 1)
+$rhome = ( $home.replace('\', '/') + '/R' )
 
-cd $home
-
-Invoke-WebRequest -Uri $URL -OutFile $filename
-
-# --------------------------------------------------------------------
-Write-Verbose ( "Extracting " + $filename )
-
-tar xzf $filename
+Add-Content `
+  -Value "options(repos = structure(c(CRAN = 'https://cran.rstudio.com'))); .libPaths('$rhome')" `
+  -Path .Rprofile
 
 # --------------------------------------------------------------------
-Write-Verbose ( "Checking " + $filename )
+Write-Verbose "Installing package dependencies..."
 
-$R CMD check $filename
+# First we download install-github.R externally, because not all R
+# versions support HTTPS. Then we install a version of 'remotes'.
+
+Invoke-WebRequest `
+  -Uri "https://raw.githubusercontent.com/MangoTheCat/remotes/master/install-github.R" `
+  -OutFile .\install-github.R
+
+& $R -q -e "source('install-github.R')`$value('mangothecat/remotes')" 2>&1
+
+# Finally, the dependencies
+
+& $R -q -e "remotes::install_local('$Pkgname', dependencies = TRUE)" 2>&1
+
+# --------------------------------------------------------------------
+Write-Verbose ( "Checking " + $Filename )
+
+$ErrorActionPreference = "SilentlyContinue"
+& $R CMD check -lib "$rhome" $Filename 2>&1
+$ErrorActionPreference = "Continue"
+

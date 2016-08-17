@@ -36,6 +36,28 @@ Write-Verbose "Creating home directory..."
 
 mkdir $homefull | Out-Null
 
+# --------------------------------------------------------------------
+Write-Verbose ( "Downloading " + $URL )
+
+$filename = $URL.Substring($URL.LastIndexOf("/") + 1)
+$pkgname  = $filename.Substring(0, $filename.IndexOf("_"))
+
+Invoke-WebRequest -Uri $URL -OutFile ( $homefull + "\" + $filename )
+
+# --------------------------------------------------------------------
+Write-Verbose ( "Extracting " + $filename )
+
+Push-Location
+
+cd $homefull
+
+tar xzf $filename
+
+Pop-Location
+
+# ------------------------------------------------------------------
+Write-Verbose "Setting home directory permissions..."
+
 $user = Get-User $username
 $user.HomeDirectory = $homedir
 $user.HomeDrive = $homedrive
@@ -50,9 +72,12 @@ icacls $homefull /grant $perms /T | out-null
 # ------------------------------------------------------------------
 Write-Verbose "Starting sub-process as new user..."
 
+$arguments = ( '-command .\slave.ps1' + ' -verbose ' + $filename + `
+  ' ' + $pkgname )
+
 $StartInfo = New-Object System.Diagnostics.ProcessStartInfo -Property @{
                FileName = 'powershell.exe'
-	       Arguments = ( '-command .\slave.ps1' + ' ' + $URL )
+	       Arguments = $arguments
 	       UseShellExecute = $false
 	       RedirectStandardOutput = $true
 	       RedirectStandardError = $true
