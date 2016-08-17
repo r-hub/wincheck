@@ -101,7 +101,7 @@ $OutEvent = Register-ObjectEvent `
 $ErrEvent = Register-ObjectEvent `
   -InputObject $Process `
   -EventName ErrorDataReceived `
-  -Action { Write-Host $Event.SourceEventArgs.Data }
+  -Action { Write-Host $Event.SourceEventArgs.Data }  
 
 # Start process
 [void]$Process.Start()

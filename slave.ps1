@@ -25,6 +25,60 @@ Add-Content `
   -Value "options(repos = structure(c(CRAN = 'https://cran.rstudio.com'))); .libPaths('$rhome')" `
   -Path .Rprofile
 
+# A function to run R
+
+function Run-R {
+    Param(
+	[Parameter(Mandatory = $True)]
+	[string]$arguments
+    )
+
+    $StartInfo = New-Object System.Diagnostics.ProcessStartInfo `
+      -Property @{
+          FileName = "$R"
+	  Arguments = "$arguments"
+	  UseShellExecute = $false
+	  RedirectStandardOutput = $true
+	  RedirectStandardError = $true
+	  CreateNoWindow = $true
+      }
+
+    # Create new process
+    $Process = New-Object System.Diagnostics.Process
+
+    # Assign previously created StartInfo properties
+    $Process.StartInfo = $StartInfo
+
+    # Register Object Events for stdin\stdout reading
+    $OutEvent = Register-ObjectEvent `
+      -InputObject $Process `
+      -EventName OutputDataReceived `
+      -Action { Write-Host $Event.SourceEventArgs.Data }
+    $ErrEvent = Register-ObjectEvent `
+      -InputObject $Process `
+      -EventName ErrorDataReceived `
+      -Action { Write-Host $Event.SourceEventArgs.Data }
+    
+    # Start process
+    [void]$Process.Start()
+    
+    # Begin reading stdin\stdout
+    $Process.BeginOutputReadLine()
+    $Process.BeginErrorReadLine()
+    
+    $Process.WaitForExit()
+    
+    # Unregister events
+    $OutEvent.Name, $ErrEvent.Name |
+      ForEach-Object {Unregister-Event -SourceIdentifier $_}
+}
+
+& $R -q -e "print('hello'); Sys.sleep(5); print('still')"
+
+Run-R "-q -e `"print('hello'); Sys.sleep(5); print('still')`""
+
+exit
+
 # --------------------------------------------------------------------
 Write-Verbose "Installing package dependencies..."
 
@@ -35,16 +89,13 @@ Invoke-WebRequest `
   -Uri "https://raw.githubusercontent.com/MangoTheCat/remotes/master/install-github.R" `
   -OutFile .\install-github.R
 
-& $R -q -e "source('install-github.R')`$value('mangothecat/remotes')" 2>&1
+Run-R "-q -e `"source('install-github.R')`$value('mangothecat/remotes')`""
 
 # Finally, the dependencies
 
-& $R -q -e "remotes::install_local('$Pkgname', dependencies = TRUE)" 2>&1
+Run-R "-q -e `"remotes::install_local('$Pkgname', dependencies = TRUE)`""
 
 # --------------------------------------------------------------------
 Write-Verbose ( "Checking " + $Filename )
 
-$ErrorActionPreference = "SilentlyContinue"
-& $R CMD check -lib "$rhome" $Filename 2>&1
-$ErrorActionPreference = "Continue"
-
+Run-R "CMD check -l $rhome $Filename"
