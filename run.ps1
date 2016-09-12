@@ -20,6 +20,7 @@ $username  = "USER" + (-join ((65..90) + (97..122) |
 $password  = (-join ((65..90) + (97..122) |
   Get-Random -Count 20 |
   % {[char]$_}))
+$password = ( $password + "xX1!" )
 $homedrive = "C:"
 $homedir   = ( "\Users\" + $username )
 $homefull  = ( $homedrive + $homedir )
