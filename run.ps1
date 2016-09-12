@@ -72,8 +72,7 @@ icacls $homefull /grant $perms /T | out-null
 # ------------------------------------------------------------------
 Write-Verbose "Starting sub-process as new user..."
 
-$arguments = ( '-command .\slave.ps1' + ' -verbose ' + $filename + `
-  ' ' + $pkgname )
+$arguments = ( '-command .\slave.ps1' + ' ' + $filename + ' ' + $pkgname )
 
 $StartInfo = New-Object System.Diagnostics.ProcessStartInfo -Property @{
                FileName = 'powershell.exe'
