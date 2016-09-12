@@ -17,14 +17,16 @@
 1. The Carbon PowerShell extension needs PowerShell 4.x at least, so we need to download and install PowerShell. It is part of the Windows Management Framework. More info here: http://social.technet.microsoft.com/wiki/contents/articles/21016.how-to-install-windows-powershell-4-0.aspx Download from here: https://www.microsoft.com/en-gb/download/details.aspx?id=40855 You'll need the 6.1 version for x64. Install it, restart the machine.
 1. Set up PowerShell to look nicer. E.g. use a bigger TrueType font. It is also worth installing PSReadline and PSGet, see http://psget.net/ and https://bitbucket.org/kshah29/psreadline
 1. Install Carbon from here: http://get-carbon.org/about_Carbon_Installation.html I used version 2.2.0.
-  ```
-  curl -OutFile carbon-2.2.0.zip https://bitbucket.org/splatteredbits/carbon/downloads/Carbon-2.2.0.zip
-  ```
+    
+    ```
+    curl -OutFile carbon-2.2.0.zip https://bitbucket.org/splatteredbits/carbon/downloads/Carbon-2.2.0.zip
+    ```
   Copy the `Carbon` directory into `C:\Users\rhub\Documents\WindowsPowerShell\Modules`
 1. Allow running PowerShell scripts:
-  ```
-  Set-ExecutionPolicy RemoteSigned
-  ```
+
+    ```
+    Set-ExecutionPolicy RemoteSigned
+    ```
 1. Start a new instance of PowerShell, and Carbon should be loaded.
 1. Install the desired R and Rtools version(s). See the compatibility matrix here: https://cran.r-project.org/bin/windows/Rtools/
 1. Install Java from Oracle, both the 32 bit and the 64 bit version.
