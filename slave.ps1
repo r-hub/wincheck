@@ -10,7 +10,7 @@ Param(
 # --------------------------------------------------------------------
 Write-Verbose "Setting up R Environment..."
 
-$R = 'C:\Program Files\R\R-devel\bin\R'
+$R = 'C:\Program Files\R\R-3.2.5\bin\R'
 
 # We need to set this, otherwise R never finds the profile
 Set-Variable home (pwd).toString() -Force
