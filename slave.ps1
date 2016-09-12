@@ -73,12 +73,6 @@ function Run-R {
       ForEach-Object {Unregister-Event -SourceIdentifier $_}
 }
 
-& $R -q -e "print('hello'); Sys.sleep(5); print('still')"
-
-Run-R "-q -e `"print('hello'); Sys.sleep(5); print('still')`""
-
-exit
-
 # --------------------------------------------------------------------
 Write-Verbose "Installing package dependencies..."
 
