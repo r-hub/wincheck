@@ -10,6 +10,8 @@ Param(
 
 Write-Verbose ( "Checking " + $url )
 
+Import-Module Carbon -Verbose:$False
+
 # ------------------------------------------------------------------
 
 $username  = "USER" + (-join ((65..90) + (97..122) |
