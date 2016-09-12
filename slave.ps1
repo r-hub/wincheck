@@ -15,7 +15,7 @@ $R = 'C:\Program Files\R\R-3.2.5\bin\R'
 # We need to set this, otherwise R never finds the profile
 Set-Variable home (pwd).toString() -Force
 (get-psprovider 'FileSystem').Home = $home
-[system.environment]::SetEnvironmentVariable("home", "$home") 
+[system.environment]::SetEnvironmentVariable("home", "$home")
 
 mkdir R -ErrorAction SilentlyContinue | out-null
 
@@ -58,16 +58,16 @@ function Run-R {
       -InputObject $Process `
       -EventName ErrorDataReceived `
       -Action { Write-Host $Event.SourceEventArgs.Data }
-    
+
     # Start process
     [void]$Process.Start()
-    
+
     # Begin reading stdin\stdout
     $Process.BeginOutputReadLine()
     $Process.BeginErrorReadLine()
-    
+
     $Process.WaitForExit()
-    
+
     # Unregister events
     $OutEvent.Name, $ErrEvent.Name |
       ForEach-Object {Unregister-Event -SourceIdentifier $_}

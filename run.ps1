@@ -2,10 +2,13 @@
 [CmdletBinding()]
 Param(
     [Parameter(Mandatory=$True,Position=1)]
-    [string]$URL
+    [string]$package,
+    [Parameter(Mandatory=$True,Position=2)]
+    [string]$url
+
 )
 
-Write-Verbose ( "Checking " + $URL )
+Write-Verbose ( "Checking " + $url )
 
 # ------------------------------------------------------------------
 
@@ -37,21 +40,21 @@ Write-Verbose "Creating home directory..."
 mkdir $homefull | Out-Null
 
 # --------------------------------------------------------------------
-Write-Verbose ( "Downloading " + $URL )
+Write-Verbose ( "Downloading " + $url )
 
-$filename = $URL.Substring($URL.LastIndexOf("/") + 1)
-$pkgname  = $filename.Substring(0, $filename.IndexOf("_"))
+# $package = $url.Substring($url.LastIndexOf("/") + 1)
+$pkgname  = $package.Substring(0, $package.IndexOf("_"))
 
-Invoke-WebRequest -Uri $URL -OutFile ( $homefull + "\" + $filename )
+Invoke-WebRequest -Uri $url -OutFile ( $homefull + "\" + $package )
 
 # --------------------------------------------------------------------
-Write-Verbose ( "Extracting " + $filename )
+Write-Verbose ( "Extracting " + $package )
 
 Push-Location
 
 cd $homefull
 
-tar xzf $filename
+tar xzf $package
 
 Pop-Location
 
@@ -72,10 +75,10 @@ icacls $homefull /grant $perms /T | out-null
 # ------------------------------------------------------------------
 Write-Verbose "Starting sub-process as new user..."
 
-$arguments = ( '-command .\slave.ps1' + ' ' + $filename + ' ' + $pkgname )
+$arguments = ( '-command .\slave.ps1' + ' ' + $package + ' ' + $pkgname )
 
 $StartInfo = New-Object System.Diagnostics.ProcessStartInfo -Property @{
-               FileName = 'powershell.exe'
+               Filename = 'powershell.exe'
 	       Arguments = $arguments
 	       UseShellExecute = $false
 	       RedirectStandardOutput = $true
@@ -100,7 +103,7 @@ $OutEvent = Register-ObjectEvent `
 $ErrEvent = Register-ObjectEvent `
   -InputObject $Process `
   -EventName ErrorDataReceived `
-  -Action { Write-Host $Event.SourceEventArgs.Data }  
+  -Action { Write-Host $Event.SourceEventArgs.Data }
 
 # Start process
 [void]$Process.Start()
