@@ -12,6 +12,8 @@ Write-Verbose ( "Checking " + $url )
 
 Import-Module Carbon -Verbose:$False
 
+Write-Host ">>>>>============== Creating new user"
+
 # ------------------------------------------------------------------
 
 $username  = "USER" + (-join ((65..90) + (97..122) |
@@ -41,6 +43,8 @@ Install-User `
 Write-Verbose "Creating home directory..."
 
 mkdir $homefull | Out-Null
+
+Write-Host ">>>>>============== Downloading and unpacking package file"
 
 # --------------------------------------------------------------------
 Write-Verbose ( "Downloading " + $url )
@@ -125,6 +129,8 @@ $OutEvent.Name, $ErrEvent.Name |
 
 # ------------------------------------------------------------------
 Write-Verbose "Cleaning up, deleting files and user"
+
+Write-Host ">>>>>============== Cleaning up files and user"
 
 Uninstall-User $username | Out-Null
 rmdir -Recurse $homedir | Out-Null

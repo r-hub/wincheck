@@ -76,6 +76,8 @@ function Run-R {
 # --------------------------------------------------------------------
 Write-Verbose "Installing package dependencies..."
 
+Write-Host ">>>>>============== Querying package dependencies"
+
 # First we download install-github.R externally, because not all R
 # versions support HTTPS. Then we install a version of 'remotes'.
 
@@ -87,9 +89,15 @@ Run-R "-q -e `"source('install-github.R')`$value('mangothecat/remotes')`""
 
 # Finally, the dependencies
 
+Write-Host ">>>>>============== Installing package dependencies"
+
 Run-R "-q -e `"remotes::install_local('$Pkgname', dependencies = TRUE)`""
 
 # --------------------------------------------------------------------
 Write-Verbose ( "Checking " + $Filename )
 
+Write-Host ">>>>>============== Running R CMD check"
+
 Run-R "CMD check -l $rhome $Filename"
+
+Write-Host "+R-HUB-R-HUB-R-HUB Done."
