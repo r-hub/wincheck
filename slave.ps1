@@ -66,7 +66,9 @@ function Run-R {
     $Process.BeginOutputReadLine()
     $Process.BeginErrorReadLine()
 
-    $Process.WaitForExit()
+    do {
+       Start-Sleep 1
+    } while (!$Process.HasExited)
 
     # Unregister events
     $OutEvent.Name, $ErrEvent.Name |
