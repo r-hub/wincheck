@@ -30,6 +30,7 @@
 1. Start a new instance of PowerShell, and Carbon should be loaded.
 1. Install the desired R and Rtools version(s). See the compatibility matrix here: https://cran.r-project.org/bin/windows/Rtools/
 1. Install Java from Oracle, both the 32 bit and the 64 bit version.
+1. Lesson from my EARL2016 demo: turn off automatic update installs, because they might reboot the machine in the middle of your talk.
 
 ### Capturing it as an image
 
