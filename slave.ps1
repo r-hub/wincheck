@@ -18,11 +18,11 @@ $R = "C:\Program Files\R\R-${RVersion}\bin\R"
 # Jeroen's toolchain
 
 If ($RVersion -eq "3.2.5") {
-    $env:PATH = 'C:\Rtools33\bin;C:\Rtools\gcc-4.6.3\bin;' + $env:PATH
+    $rpath = 'C:\Rtools33\bin;C:\Rtools\gcc-4.6.3\bin;' + $env:PATH
+    $rbinpref = ''
 } Else {
-    $env:PATH = 'C:\Rtools34\bin;' + $env:PATH
-    $env:BINPREF = 'C:/Rtools34/mingw_32/bin/'
-    $env:BINPREF64 = 'C:/RTools34/mingw_64/bin'
+    $rpath = 'C:\Rtools34\bin;' + $env:PATH
+    $rbinpref = 'C:/Rtools34/mingw_${win}/bin/'
 }
 
 # We need to set this, otherwise R never finds the profile
@@ -56,9 +56,8 @@ function Run-R {
 	  CreateNoWindow = $true
       }
 
-    $StartInfo.EnvironmentVariables["PATH"] = $env:PATH
-    $StartInfo.EnvironmentVariables["BINPREF"] = $env:BINPREF
-    $StartInfo.EnvironmentVariables["BINPREF64"] = $env:BINPREF64
+    $StartInfo.EnvironmentVariables["PATH"] = $rpath
+    $StartInfo.EnvironmentVariables["BINPREF"] = $rbinpref
 
     # Create new process
     $Process = New-Object System.Diagnostics.Process
