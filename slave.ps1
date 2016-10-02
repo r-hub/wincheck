@@ -4,13 +4,26 @@ Param(
     [Parameter(Mandatory = $True, Position = 1)]
     [string]$Filename,
     [Parameter(Mandatory = $True, Position = 2)]
-    [string]$Pkgname
+    [string]$Pkgname,
+    [Parameter(Mandatory = $True, Position = 3)]
+    [string]$RVersion
 )
 
 # --------------------------------------------------------------------
 Write-Verbose "Setting up R Environment..."
 
-$R = 'C:\Program Files\R\R-3.2.5\bin\R'
+$R = "C:\Program Files\R\R-${RVersion}\bin\R"
+
+# Currently only 3.2.5 is special, and the rest use Rtools34 and 
+# Jeroen's toolchain
+
+If ($RVersion -eq "3.2.5") {
+    $env:PATH = 'C:\Rtools33\bin;C:\Rtools\gcc-4.6.3\bin;' + $env:PATH
+} Else {
+    $env:PATH = 'C:\Rtools34\bin;' + $env:PATH
+    $env:BINPREF = 'C:/Rtools34/mingw_32/bin/'
+    $env:BINPREF64 = 'C:/RTools34/mingw_64/bin'
+}
 
 # We need to set this, otherwise R never finds the profile
 Set-Variable home (pwd).toString() -Force
@@ -42,6 +55,10 @@ function Run-R {
 	  RedirectStandardError = $true
 	  CreateNoWindow = $true
       }
+
+    $StartInfo.EnvironmentVariables["PATH"] = $env:PATH
+    $StartInfo.EnvironmentVariables["BINPREF"] = $env:BINPREF
+    $StartInfo.EnvironmentVariables["BINPREF64"] = $env:BINPREF64
 
     # Create new process
     $Process = New-Object System.Diagnostics.Process

@@ -4,8 +4,9 @@ Param(
     [Parameter(Mandatory=$True,Position=1)]
     [string]$package,
     [Parameter(Mandatory=$True,Position=2)]
-    [string]$url
-
+    [string]$url,
+    [Parameter(Mandatory=$True,Position=3)]
+    [string]$rversion
 )
 
 Write-Verbose ( "Checking " + $url )
@@ -80,9 +81,31 @@ icacls $homefull /setowner $username /T /L | out-null
 icacls $homefull /grant $perms /T | out-null
 
 # ------------------------------------------------------------------
+Write-Verbose "Getting R version from symbolic name..."
+
+If ($rversion -eq "r-devel") {
+    $realrversion = "devel"
+} ElseIf ($rversion -eq "r-release") {
+    $realrversion = $(ConvertFrom-JSON $(Invoke-WebRequest `
+      http://rversions.r-pkg.org/r-release).Content).version
+} ElseIf ($rversion -eq "r-patched") {
+    $realrversion = $(ConvertFrom-JSON $(Invoke-WebRequest `
+      http://rversions.r-pkg.org/r-release).Content).version + "patched"
+} ElseIf ($rversion -eq "r-oldrel") {
+    $realrversion = $(ConvertFrom-JSON $(Invoke-WebRequest `
+      http://rversions.r-pkg.org/r-oldrel).Content).version
+} Else {
+    $realrversion = $rversion
+}
+
+# ------------------------------------------------------------------
 Write-Verbose "Starting sub-process as new user..."
 
-$arguments = ( '-command .\slave.ps1' + ' ' + $package + ' ' + $pkgname )
+$arguments = ( '-command .\slave.ps1' + ' ' +
+	       $package + ' ' +
+	       $pkgname + ' ' +
+	       $realrversion
+	     )
 
 $StartInfo = New-Object System.Diagnostics.ProcessStartInfo -Property @{
                Filename = 'powershell.exe'
@@ -95,6 +118,9 @@ $StartInfo = New-Object System.Diagnostics.ProcessStartInfo -Property @{
 	       Password = $secpasswd
 	       WorkingDirectory = $homedir
 }
+
+# Supply environment variables to the subprocess
+
 
 # Create new process
 $Process = New-Object System.Diagnostics.Process
