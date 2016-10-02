@@ -22,7 +22,7 @@ If ($RVersion -eq "3.2.5") {
     $rbinpref = ''
 } Else {
     $rpath = 'C:\Rtools34\bin;' + $env:PATH
-    $rbinpref = 'C:/Rtools34/mingw_${win}/bin/'
+    $rbinpref = 'C:/Rtools34/mingw_$(WIN)/bin/'
 }
 
 # We need to set this, otherwise R never finds the profile
