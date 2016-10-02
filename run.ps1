@@ -62,7 +62,11 @@ Push-Location
 
 cd $homefull
 
+# Need this for tar and gzip
+$oldpath = $env:PATH
+$env:PATH = 'C:\rtools33\bin;' + $env:PATH
 tar xzf $package
+$env:PATH = $oldpath
 
 Pop-Location
 
