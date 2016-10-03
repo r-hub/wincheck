@@ -9,12 +9,19 @@ Param(
     [string]$RVersion
 )
 
+$CheckArgs = ""
+$EnvVars = ""
+If (Test-Path "rhub-args.txt") { $CheckArgs = [IO.File]::ReadAllText("rhub-args.txt").Trim() }
+If (Test-Path "rhub-envs.txt") { $EnvVars = [IO.File]::ReadAllText("rhub-envs.txt").Trim() }
+
+ls env: | Out-Host
+
 # --------------------------------------------------------------------
 Write-Verbose "Setting up R Environment..."
 
 $R = "C:\Program Files\R\R-${RVersion}\bin\R"
 
-# Currently only 3.2.5 is special, and the rest use Rtools34 and 
+# Currently only 3.2.5 is special, and the rest use Rtools34 and
 # Jeroen's toolchain
 
 If ($RVersion -eq "3.2.5") {
@@ -56,6 +63,23 @@ function Run-R {
 	  CreateNoWindow = $true
       }
 
+    # Set user supplied env vars, it is supplied as a newline
+    # separated list of KEY=value records, in a single string
+    if (! $EnvVars -eq "") {
+	$EnvVarsArray = ($EnvVars -split '[\r\n]')
+        for ($i=0; $i -lt $EnvVarsArray.length; $i++) {
+            $keyVal = ($EnvVarsArray[$i] -split '=', 2)
+            if ($keyVal.length -eq 2) {
+                $StartInfo.EnvironmentVariables[$keyVal[0]] = $keyVal[1]
+                Write-Host ('setting ' + $keyVal[0] + ' to ' + $keyVal[1])
+            } elseif ($keyVal.length -eq 1 -and ! $keyVal[0] -eq "") {
+                $StartInfo.EnvironmentVariables[$keyVal[0]] = ""
+                Write-Host ('setting ' + $keyVal[0] + ' to empty')
+            }
+        }
+    }
+
+    # This is after setting user env vars, users cannot override it
     $StartInfo.EnvironmentVariables["PATH"] = $rpath
     $StartInfo.EnvironmentVariables["BINPREF"] = $rbinpref
 
@@ -116,6 +140,6 @@ Write-Verbose ( "Checking " + $Filename )
 
 Write-Host ">>>>>============== Running R CMD check"
 
-Run-R "CMD check -l $rhome $Filename"
+Run-R "CMD check $CheckArgs -l $rhome $Filename"
 
 Write-Host "+R-HUB-R-HUB-R-HUB Done."

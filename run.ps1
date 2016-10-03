@@ -6,7 +6,11 @@ Param(
     [Parameter(Mandatory=$True,Position=2)]
     [string]$url,
     [Parameter(Mandatory=$True,Position=3)]
-    [string]$rversion
+    [string]$rversion,
+    [Parameter(Position=4)]
+    [string]$checkArgs,
+    [Parameter(Position=5)]
+    [string]$envVars
 )
 
 Write-Verbose ( "Checking " + $url )
@@ -54,6 +58,16 @@ Write-Verbose ( "Downloading " + $url )
 $pkgname  = $package.Substring(0, $package.IndexOf("_"))
 
 Invoke-WebRequest -Uri $url -OutFile ( $homefull + "\" + $package )
+
+# --------------------------------------------------------------------
+# We need to pass these in temporary files, becuase it is hard
+# escape them, and if I pass them as environment variables, then
+# PowerShell will not use the specified user (!!!)
+
+$argsFile = ( $homefull + "\" + "rhub-args.txt" )
+$envsFile = ( $homefull + "\" + "rhub-envs.txt" )
+if (! $checkArgs -eq "") { $checkArgs | Out-File $argsFile }
+if (! $envVars -eq "") { $envVars | Out-File $envsFile }
 
 # --------------------------------------------------------------------
 Write-Verbose ( "Extracting " + $package )
@@ -122,9 +136,6 @@ $StartInfo = New-Object System.Diagnostics.ProcessStartInfo -Property @{
 	       Password = $secpasswd
 	       WorkingDirectory = $homedir
 }
-
-# Supply environment variables to the subprocess
-
 
 # Create new process
 $Process = New-Object System.Diagnostics.Process
