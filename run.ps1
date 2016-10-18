@@ -67,7 +67,8 @@ Invoke-WebRequest -Uri $url -OutFile ( $homefull + "\" + $package )
 $argsFile = ( $homefull + "\" + "rhub-args.txt" )
 $envsFile = ( $homefull + "\" + "rhub-envs.txt" )
 if (! $checkArgs -eq "") { $checkArgs | Out-File $argsFile }
-if (! $envVars -eq "") { $envVars | Out-File $envsFile }
+echo '_R_CHECK_FORCE_SUGGESTS_=false' | Out-File $envsFile
+if (! $envVars -eq "") { $envVars | Out-File -Append $envsFile }
 
 # --------------------------------------------------------------------
 Write-Verbose ( "Extracting " + $package )
