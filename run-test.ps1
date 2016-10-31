@@ -106,10 +106,10 @@ If ($rversion -eq "r-devel") {
     $realrversion = "devel"
 } ElseIf ($rversion -eq "r-release") {
     $realrversion = $(ConvertFrom-JSON $(Invoke-WebRequest `
-      http://rversions.r-pkg.org/r-release).Content).version
+      http://rversions.r-pkg.org/r-release-win).Content).version
 } ElseIf ($rversion -eq "r-patched") {
     $realrversion = $(ConvertFrom-JSON $(Invoke-WebRequest `
-      http://rversions.r-pkg.org/r-release).Content).version + "patched"
+      http://rversions.r-pkg.org/r-release-win).Content).version + "patched"
 } ElseIf ($rversion -eq "r-oldrel") {
     $realrversion = $(ConvertFrom-JSON $(Invoke-WebRequest `
       http://rversions.r-pkg.org/r-oldrel).Content).version
