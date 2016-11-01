@@ -95,7 +95,7 @@ $user.HomeDirectory = $homedir
 $user.HomeDrive = $homedrive
 $user.save()
 
-cp slave-test.ps1 $homefull | Out-Null
+cp slave.ps1 $homefull | Out-Null
 
 $perms = ( $username + ":(OI)(CI)F" )
 icacls $homefull /setowner $username /T /L | out-null
@@ -122,7 +122,7 @@ If ($rversion -eq "r-devel") {
 # ------------------------------------------------------------------
 Write-Verbose "Starting sub-process as new user..."
 
-$arguments = ( '-command .\slave-test.ps1' + ' ' +
+$arguments = ( '-command .\slave.ps1' + ' ' +
 	       $package + ' ' +
 	       $pkgname + ' ' +
 	       $realrversion
