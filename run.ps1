@@ -4,16 +4,18 @@ Param(
     [Parameter(Mandatory=$True,Position=1)]
     [string]$package,
     [Parameter(Mandatory=$True,Position=2)]
-    [string]$url,
+    [string]$jobid,
     [Parameter(Mandatory=$True,Position=3)]
+    [string]$url,
+    [Parameter(Mandatory=$True,Position=4)]
     [string]$rversion,
-    [Parameter(Position=4)]
-    [string]$checkArgs,
     [Parameter(Position=5)]
+    [string]$checkArgs,
+    [Parameter(Position=6)]
     [string]$envVars
 )
 
-Write-Verbose ( "Checking " + $url )
+Write-Verbose ( "Checking " + $jobid )
 
 Import-Module Carbon -Verbose:$False
 
@@ -168,6 +170,12 @@ do {
 # Unregister events
 $OutEvent.Name, $ErrEvent.Name |
     ForEach-Object {Unregister-Event -SourceIdentifier $_}
+
+# ------------------------------------------------------------------
+Write-Verbose "Saving artifacts"
+
+mkdir $jobid | Out-Null
+cp -Recurse ( $homefull + "\" + $pkgname + ".Rcheck" ) $jobid | Out-Null
 
 # ------------------------------------------------------------------
 Write-Verbose "Cleaning up, deleting files and user"
