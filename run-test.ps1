@@ -176,6 +176,7 @@ Write-Verbose "Saving artifacts"
 
 mkdir $jobid | Out-Null
 cp -Recurse ( $homefull + "\" + $pkgname + ".Rcheck" ) $jobid | Out-Null
+cp ( $homefull + "\" + "*.zip" ) $jobid | Out-Null
 
 # ------------------------------------------------------------------
 Write-Verbose "Cleaning up, deleting files and user"
