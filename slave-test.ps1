@@ -82,6 +82,7 @@ function Run-R {
     # This is after setting user env vars, users cannot override it
     $StartInfo.EnvironmentVariables["PATH"] = $rpath
     $StartInfo.EnvironmentVariables["BINPREF"] = $rbinpref
+    $StartInfo.EnvironmentVariables["TMPDIR"] = ( $home + "\TEMP" )
 
     # Create new process
     $Process = New-Object System.Diagnostics.Process

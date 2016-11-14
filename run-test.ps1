@@ -50,6 +50,7 @@ Install-User `
 Write-Verbose "Creating home directory..."
 
 mkdir $homefull | Out-Null
+mkdir ( $homefull + "\TEMP" ) | Out-Null
 
 Write-Host ">>>>>============== Downloading and unpacking package file"
 
