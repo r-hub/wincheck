@@ -116,6 +116,15 @@ function Run-R {
 }
 
 # --------------------------------------------------------------------
+Write-Verbose "Adding BioC repositories..."
+
+Run-R "-q -e `"source('https://bioconductor.org/biocLite.R')`""
+
+Add-Content `
+  -Value "options(repos = BiocInstaller::biocinstallRepos()); unloadNamespace('BiocInstaller')" `
+  -Path .Rprofile
+
+# --------------------------------------------------------------------
 Write-Verbose "Installing package dependencies..."
 
 Write-Host ">>>>>============== Querying package dependencies"
