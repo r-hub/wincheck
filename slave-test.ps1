@@ -133,7 +133,7 @@ Run-R "-q -e `"source('install-github.R')`$value('mangothecat/remotes')`""
 
 Write-Host ">>>>>============== Installing package dependencies"
 
-Run-R "-q -e `"remotes::install_local('$Pkgname', dependencies = TRUE)`""
+Run-R "-q -e `"remotes::install_local('$Pkgname', dependencies = TRUE, INSTALL_opts = '--build')`""
 
 # --------------------------------------------------------------------
 Write-Verbose ( "Checking " + $Filename )
