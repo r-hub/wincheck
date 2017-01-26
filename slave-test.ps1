@@ -14,8 +14,6 @@ $EnvVars = ""
 If (Test-Path "rhub-args.txt") { $CheckArgs = [IO.File]::ReadAllText("rhub-args.txt").Trim() }
 If (Test-Path "rhub-envs.txt") { $EnvVars = [IO.File]::ReadAllText("rhub-envs.txt").Trim() }
 
-ls env: | Out-Host
-
 # --------------------------------------------------------------------
 Write-Verbose "Setting up R Environment..."
 
@@ -36,6 +34,9 @@ If ($RVersion -eq "3.2.5") {
 Set-Variable home (pwd).toString() -Force
 (get-psprovider 'FileSystem').Home = $home
 [system.environment]::SetEnvironmentVariable("home", "$home")
+[system.environment]::SetEnvironmentVariable("USERPROFILE", "$home")
+
+ls env: | Out-Host
 
 mkdir R -ErrorAction SilentlyContinue | out-null
 
