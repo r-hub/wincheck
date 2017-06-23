@@ -135,10 +135,10 @@ Write-Host ">>>>>============== Querying package dependencies"
 # versions support HTTPS. Then we install a version of 'remotes'.
 
 Invoke-WebRequest `
-  -Uri "https://raw.githubusercontent.com/MangoTheCat/remotes/master/install-github.R" `
+  -Uri "https://raw.githubusercontent.com/r-lib/remotes/master/install-github.R" `
   -OutFile .\install-github.R
 
-Run-R "-q -e `"source('install-github.R')`$value('mangothecat/remotes')`""
+Run-R "-q -e `"source('install-github.R')`$value('r-lib/remotes')`""
 
 # Finally, the dependencies
 
