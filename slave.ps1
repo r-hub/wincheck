@@ -30,9 +30,9 @@ If ($RVersion -eq "3.2.5") {
     $rbinpref = 'C:/Rtools34/mingw_$(WIN)/bin/'
 }
 
-# Aspell
+# Hunspell
 
-$rpath = 'C:\Program Files (x86)\Aspell\bin;' + $rpath
+$rpath = 'C:\hunspell\bin;' + $rpath
 
 # Pandoc
 
