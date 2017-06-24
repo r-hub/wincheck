@@ -30,6 +30,14 @@ If ($RVersion -eq "3.2.5") {
     $rbinpref = 'C:/Rtools34/mingw_$(WIN)/bin/'
 }
 
+# Aspell
+
+$rpath = 'C:\Program Files (x86)\Aspell\bin;' + $rpath
+
+# Pandoc
+
+$rpath = 'C:\Users\rhub\pandoc;' + $rpath
+
 # We need to set this, otherwise R never finds the profile
 Set-Variable home (pwd).toString() -Force
 (get-psprovider 'FileSystem').Home = $home
