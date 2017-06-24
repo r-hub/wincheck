@@ -38,10 +38,10 @@ $homefull  = ( $homedrive + $homedir )
 Write-Verbose "Copy local software..."
 
 if ( -not ( test-path "D:\Compiler" ) ) {
-  Copy-Item -Recurse -Force .\local_soft\Compiler d:\ | Out-Null
+  Copy-Item -Recurse -Force C:\Users\rhub\Documents\local_soft\Compiler d:\ | Out-Null
 }
 if ( -not ( test-path "D:\RCompile" ) ) {
-  Copy-Item -Recurse -Force .\local_soft\RCompile d:\ | Out-Null
+  Copy-Item -Recurse -Force C:\Users\rhub\Documents\local_soft\RCompile d:\ | Out-Null
 }
 
 # ------------------------------------------------------------------
