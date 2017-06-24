@@ -35,6 +35,16 @@ $homedir   = ( "\Users\" + $username )
 $homefull  = ( $homedrive + $homedir )
 
 # ------------------------------------------------------------------
+Write-Verbose "Copy local software..."
+
+if ( -not ( test-path "D:\Compiler" ) ) {
+  Copy-Item -Recurse -Force .\local_soft\Compiler d:\ | Out-Null
+}
+if ( -not ( test-path "D:\RCompile" ) ) {
+  Copy-Item -Recurse -Force .\local_soft\RCompile d:\ | Out-Null
+}
+
+# ------------------------------------------------------------------
 Write-Verbose "Creating new user..."
 
 $secpasswd = ConvertTo-SecureString $password -AsPlainText -Force
