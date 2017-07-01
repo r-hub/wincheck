@@ -30,13 +30,13 @@ If ($RVersion -eq "3.2.5") {
     $rbinpref = 'C:/Rtools34/mingw_$(WIN)/bin/'
 }
 
-# Hunspell
+# Hunspell (disguised as aspell)
 
 $rpath = 'C:\hunspell\bin;' + $rpath
 
 # Pandoc
 
-$rpath = 'C:\Users\rhub\pandoc;' + $rpath
+$rpath = 'C:\Program Files\pandoc;' + $rpath
 
 # We need to set this, otherwise R never finds the profile
 Set-Variable home (pwd).toString() -Force
