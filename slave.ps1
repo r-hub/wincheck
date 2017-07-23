@@ -161,4 +161,5 @@ Write-Host ">>>>>============== Running R CMD check"
 
 Run-R "CMD check $CheckArgs -l $rhome $Filename"
 
+Write-Host ">>>>>============== Done with R CMD check"
 Write-Host "+R-HUB-R-HUB-R-HUB Done."
