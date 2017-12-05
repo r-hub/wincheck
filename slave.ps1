@@ -128,7 +128,7 @@ function Run-R {
 # --------------------------------------------------------------------
 Write-Verbose "Adding BioC repositories..."
 
-Run-R "-q -e `"if (getRversion() < '3.5.0') source('https://bioconductor.org/biocLite.R')`""
+Run-R "-q -e `"if (getRversion()<'3.5.0')source('https://bioconductor.org/biocLite.R')`""
 
 Add-Content `
   -Value "if (getRversion() < '3.5.0') { options(repos = BiocInstaller::biocinstallRepos()); unloadNamespace('BiocInstaller') } else { options(repos = c('CRAN' = 'https://cran.rstudio.com', CRANextra = 'http://www.stats.ox.ac.uk/pub/RWin')) }" `
@@ -152,7 +152,7 @@ Run-R "-q -e `"source('install-github.R')`$value('r-lib/remotes')`""
 
 Write-Host ">>>>>============== Installing package dependencies"
 
-Run-R "-q -e `"remotes::install_local('$Pkgname', dependencies = TRUE, INSTALL_opts = '--build')`""
+Run-R "-q -e `"remotes::install_local('$Pkgname',dependencies=TRUE,INSTALL_opts='--build')`""
 
 # --------------------------------------------------------------------
 Write-Verbose ( "Checking " + $Filename )
