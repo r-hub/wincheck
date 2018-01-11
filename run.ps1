@@ -15,6 +15,8 @@ Param(
     [string]$envVars
 )
 
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 Write-Verbose ( "Checking " + $jobid )
 
 Import-Module Carbon -Verbose:$False

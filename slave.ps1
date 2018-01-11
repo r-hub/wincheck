@@ -14,6 +14,8 @@ $EnvVars = ""
 If (Test-Path "rhub-args.txt") { $CheckArgs = [IO.File]::ReadAllText("rhub-args.txt").Trim() }
 If (Test-Path "rhub-envs.txt") { $EnvVars = [IO.File]::ReadAllText("rhub-envs.txt").Trim() }
 
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 # --------------------------------------------------------------------
 Write-Verbose "Setting up R Environment..."
 
