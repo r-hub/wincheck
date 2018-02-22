@@ -46,6 +46,10 @@ Set-Variable home (pwd).toString() -Force
 [system.environment]::SetEnvironmentVariable("home", "$home")
 [system.environment]::SetEnvironmentVariable("USERPROFILE", "$home")
 
+# Some tools need APPDATA set
+mkdir "$home\appdata" -ErrorAction SilentlyContinue | out-null
+[system.environment]::SetEnvironmentVariable("APPDATA", "$home\appdata")
+
 ls env: | Out-Host
 
 mkdir R -ErrorAction SilentlyContinue | out-null
