@@ -1,3 +1,4 @@
+# -*- emacs: powershell-mode -*-
 
 [CmdletBinding()]
 Param(
@@ -6,7 +7,9 @@ Param(
     [Parameter(Mandatory = $True, Position = 2)]
     [string]$Pkgname,
     [Parameter(Mandatory = $True, Position = 3)]
-    [string]$RVersion
+    [string]$RVersion,
+    [Parameter(Mandatory = $True, Position = 4)]
+    [string]$build
 )
 
 $CheckArgs = ""
@@ -142,6 +145,17 @@ Add-Content `
   -Path .Rprofile
 
 # --------------------------------------------------------------------
+If ($build -eq "true") {
+    Write-Verbose "Running R CMD build..."
+    Write-Host ">>>>>============== Running R CMD build"
+    tar xzf $Filename
+    $tardir=(tar tzf $Filename | select -first 1)
+    rm $Filename
+    Run-R "CMD build $tardir"
+    $Filename=(ls *.tar.gz | select -first 1)[0].Name
+}
+
+# --------------------------------------------------------------------
 Write-Verbose "Installing package dependencies..."
 
 Write-Host ">>>>>============== Querying package dependencies"
@@ -159,7 +173,7 @@ Run-R "-q -e `"source('install-github.R')`$value('r-lib/remotes')`""
 
 Write-Host ">>>>>============== Installing package dependencies"
 
-Run-R "-q -e `"remotes::install_local('$Pkgname',dependencies=TRUE,INSTALL_opts='--build')`""
+Run-R "-q -e `"remotes::install_local('$Filename',dependencies=TRUE,INSTALL_opts='--build')`""
 
 # --------------------------------------------------------------------
 Write-Verbose ( "Checking " + $Filename )
