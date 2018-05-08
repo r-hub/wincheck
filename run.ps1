@@ -12,7 +12,12 @@ Param(
     [Parameter(Position=5)]
     [string]$checkArgs,
     [Parameter(Position=6)]
-    [string]$envVars
+    [string]$envVars,
+    [Parameter(Position=7)]
+    [string]$build,
+    [Parameter(Position=8)]
+    [string]$pkgname
+
 )
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -69,9 +74,6 @@ Write-Host ">>>>>============== Downloading and unpacking package file"
 # --------------------------------------------------------------------
 Write-Verbose ( "Downloading " + $url )
 
-# $package = $url.Substring($url.LastIndexOf("/") + 1)
-$pkgname  = $package.Substring(0, $package.IndexOf("_"))
-
 Invoke-WebRequest -Uri $url -OutFile ( $homefull + "\" + $package )
 
 # --------------------------------------------------------------------
@@ -85,21 +87,6 @@ if (! $checkArgs -eq "") { $checkArgs | Out-File $argsFile }
 echo '_R_CHECK_FORCE_SUGGESTS_=false' | Out-File $envsFile
 echo 'R_COMPILE_AND_INSTALL_PACKAGES=always' | Out-File $envsFile
 if (! $envVars -eq "") { $envVars | Out-File -Append $envsFile }
-
-# --------------------------------------------------------------------
-Write-Verbose ( "Extracting " + $package )
-
-Push-Location
-
-cd $homefull
-
-# Need this for tar and gzip
-$oldpath = $env:PATH
-$env:PATH = 'C:\rtools33\bin;' + $env:PATH
-tar xzf $package
-$env:PATH = $oldpath
-
-Pop-Location
 
 # ------------------------------------------------------------------
 Write-Verbose "Setting home directory permissions..."
@@ -139,7 +126,8 @@ Write-Verbose "Starting sub-process as new user..."
 $arguments = ( '-command .\slave.ps1' + ' ' +
 	       $package + ' ' +
 	       $pkgname + ' ' +
-	       $realrversion
+	       $realrversion + ' ' +
+	       $build
 	     )
 
 $StartInfo = New-Object System.Diagnostics.ProcessStartInfo -Property @{
