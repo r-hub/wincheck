@@ -20,6 +20,14 @@ Param(
 
 )
 
+if ($build -eq "") {
+    $build = "false"
+}
+
+if ($pkgname -eq "") {
+    $pkgname  = $package.Substring(0, $package.IndexOf("_"))
+}
+
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 Write-Verbose ( "Checking " + $jobid )
