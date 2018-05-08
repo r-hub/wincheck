@@ -193,5 +193,5 @@ Write-Verbose "Cleaning up, deleting files and user"
 
 Write-Host ">>>>>============== Cleaning up files and user"
 
-Uninstall-User $username | Out-Null
 rmdir -Recurse -Force $homedir | Out-Null
+Uninstall-User $username | Out-Null
