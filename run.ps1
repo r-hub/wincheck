@@ -71,6 +71,8 @@ Install-User `
   -Description "Dummy user" `
   -FullName "Dummy user for Jenkins"
 
+fsutil quota modify c: 500000000 500000000 $username
+
 # ------------------------------------------------------------------
 Write-Verbose "Creating home directory..."
 
