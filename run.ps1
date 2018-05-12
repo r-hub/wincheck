@@ -195,5 +195,6 @@ Write-Verbose "Cleaning up, deleting files and user"
 
 Write-Host ">>>>>============== Cleaning up files and user"
 
+taskkill /f /fi "USERNAME eq $username"
 rmdir -Recurse -Force $homedir | Out-Null
 Uninstall-User $username | Out-Null
