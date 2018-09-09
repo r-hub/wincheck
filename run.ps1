@@ -95,9 +95,9 @@ $argsFile = ( $homefull + "\" + "rhub-args.txt" )
 $envsFile = ( $homefull + "\" + "rhub-envs.txt" )
 if (! $checkArgs -eq "") { $checkArgs | Out-File $argsFile }
 echo '_R_CHECK_FORCE_SUGGESTS_=false' | Out-File $envsFile
-echo 'R_COMPILE_AND_INSTALL_PACKAGES=never' | Out-File $envsFile
-echo 'R_REMOTES_STANDALONE=true' | Out-File $envsFile
-echo 'R_REMOTES_NO_ERRORS_FROM_WARNINGS=true' | Out-File $envsFile
+echo 'R_COMPILE_AND_INSTALL_PACKAGES=never' | Out-File -Append $envsFile
+echo 'R_REMOTES_STANDALONE=true' | Out-File -Append $envsFile
+echo 'R_REMOTES_NO_ERRORS_FROM_WARNINGS=true' | Out-File -Append $envsFile
 if (! $envVars -eq "") { $envVars | Out-File -Append $envsFile }
 
 # ------------------------------------------------------------------
