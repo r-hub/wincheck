@@ -1,4 +1,3 @@
-# -*- emacs: powershell-mode -*-
 
 [CmdletBinding()]
 Param(

@@ -32,8 +32,6 @@ if ($pkgname -eq "") {
 
 Write-Verbose ( "Checking " + $jobid )
 
-Import-Module Carbon -Verbose:$False
-
 Write-Host ">>>>>============== Creating new user"
 
 # ------------------------------------------------------------------
@@ -42,12 +40,22 @@ $username  = "USER" + (-join ((65..90) + (97..122) |
   Get-Random -Count 10 |
   % {[char]$_}))
 $password  = (-join ((65..90) + (97..122) |
-  Get-Random -Count 20 |
+  Get-Random -Count 10 |
   % {[char]$_}))
 $password = ( $password + "xX1!" )
-$homedrive = "C:"
-$homedir   = ( "\Users\" + $username )
-$homefull  = ( $homedrive + $homedir )
+
+Function Cleanup {
+    if ($username) { 
+	taskkill /f /fi "USERNAME eq $username"
+	& 'c:\program files\git\bin\bash' -c ( "rm -rf /c/users/" + $username )
+	net user $username /delete
+    }
+}
+
+Trap {
+    Cleanup
+    Exit
+}
 
 # ------------------------------------------------------------------
 Write-Verbose "Copy local software..."
@@ -62,22 +70,21 @@ if ( -not ( test-path "D:\RCompile" ) ) {
 # ------------------------------------------------------------------
 Write-Verbose "Creating new user..."
 
-$secpasswd = ConvertTo-SecureString $password -AsPlainText -Force
-$mycreds = New-Object System.Management.Automation.PSCredential `
-  ($username, $secpasswd)
+net user $username $password /add
+$secpasswd = (ConvertTo-SecureString -String $password -AsPlainText -Force)
+$credential = New-Object System.Management.Automation.PSCredential `
+	-ArgumentList @($username, $secpasswd)
 
-Install-User `
-  -Credential $mycreds `
-  -Description "Dummy user" `
-  -FullName "Dummy user for Jenkins"
+Start-Process cmd /c -WindowStyle Hidden -Wait -Credential $credential `
+	-ErrorAction SilentlyContinue `
+	-workingdirectory "c:\"
+$user = Get-WmiObject -Class win32_useraccount -Filter "LocalAccount=True AND Name='$username'"
+$userprofile = Get-WmiObject -Class win32_userprofile -Filter "SID='$($user.sid)'"
+$homefull = $userprofile.localpath
 
 fsutil quota modify c: 1000000000 1000000000 $username
 
-# ------------------------------------------------------------------
-Write-Verbose "Creating home directory..."
-
-mkdir $homefull | Out-Null
-mkdir ( $homefull + "\TEMP" ) | Out-Null
+cp slave.ps1 $homefull
 
 Write-Host ">>>>>============== Downloading and unpacking package file"
 
@@ -101,20 +108,6 @@ echo 'R_REMOTES_NO_ERRORS_FROM_WARNINGS=true' | Out-File -Append $envsFile
 if (! $envVars -eq "") { $envVars | Out-File -Append $envsFile }
 
 # ------------------------------------------------------------------
-Write-Verbose "Setting home directory permissions..."
-
-$user = Get-User $username
-$user.HomeDirectory = $homedir
-$user.HomeDrive = $homedrive
-$user.save()
-
-cp slave.ps1 $homefull | Out-Null
-
-$perms = ( $username + ":(OI)(CI)F" )
-icacls $homefull /setowner $username /T /L | out-null
-icacls $homefull /grant $perms /T | out-null
-
-# ------------------------------------------------------------------
 Write-Verbose "Getting R version from symbolic name..."
 
 If ($rversion -eq "r-devel") {
@@ -135,7 +128,8 @@ If ($rversion -eq "r-devel") {
 # ------------------------------------------------------------------
 Write-Verbose "Starting sub-process as new user..."
 
-$arguments = ( '-command .\slave.ps1' + ' ' +
+$arguments = ( '-executionpolicy bypass' + ' ' +
+	       '-command .\slave.ps1' + ' ' +
 	       $package + ' ' +
 	       $pkgname + ' ' +
 	       $realrversion + ' ' +
@@ -151,7 +145,8 @@ $StartInfo = New-Object System.Diagnostics.ProcessStartInfo -Property @{
 	       CreateNoWindow = $true
 	       UserName = $username
 	       Password = $secpasswd
-	       WorkingDirectory = $homedir
+	       LoadUserProfile = $true
+	       WorkingDirectory = $homefull
 }
 
 # Create new process
@@ -197,6 +192,4 @@ Write-Verbose "Cleaning up, deleting files and user"
 
 Write-Host ">>>>>============== Cleaning up files and user"
 
-taskkill /f /fi "USERNAME eq $username"
-rmdir -Recurse -Force $homedir | Out-Null
-Uninstall-User $username | Out-Null
+Cleanup
