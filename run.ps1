@@ -75,6 +75,13 @@ $homefull = $userprofile.localpath
 fsutil quota modify c: 1000000000 1000000000 $username
 
 cp slave.ps1 $homefull
+mkdir "$homefull\.R"
+if ($env:R_MAKEVARS_WIN) {
+    cp "$env:R_MAKEVARS_WIN" $homefull\.R\Makevars.win
+}
+if ($env:R_MAKEVARS_WIN64) {
+    cp "$env:R_MAKEVARS_WIN64" $homefull\.R\Makevars.win64
+}
 
 Write-Host ">>>>>============== Downloading and unpacking package file"
 
