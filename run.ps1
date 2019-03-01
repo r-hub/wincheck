@@ -118,6 +118,8 @@ If ($rversion -eq "r-devel") {
 } ElseIf ($rversion -eq "r-oldrel") {
     $realrversion = $(ConvertFrom-JSON $(Invoke-WebRequest `
       http://rversions.r-pkg.org/r-oldrel).Content).version
+} ElseIf ($rversion -eq "r-testing") {
+    $realrversion = "testing"
 } Else {
     $realrversion = $rversion
 }
