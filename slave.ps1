@@ -172,7 +172,8 @@ Run-R "-q -e `"source('install-github.R')`$value('r-lib/remotes@r-hub')`""
 
 Write-Host ">>>>>============== Installing package dependencies"
 
-Run-R "-q -e `"remotes::install_local('$Filename',dependencies=TRUE,INSTALL_opts='--build')`""
+Run-R "-q -e `"remotes::install_deps('$Filename',dependencies=TRUE)`""
+Run-R "CMD INSTALL --build $Filename"
 
 # --------------------------------------------------------------------
 Write-Verbose ( "Checking " + $Filename )
