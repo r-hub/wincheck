@@ -137,10 +137,14 @@ function Run-R {
 # --------------------------------------------------------------------
 Write-Verbose "Adding BioC repositories..."
 
-Run-R "-q -e `"if (getRversion()<'3.5.0')source('https://bioconductor.org/biocLite.R')`""
+Run-R "-q -e `"install.packages('BiocManager')`""
 
 Add-Content `
-  -Value "if (getRversion() < '3.5.0') { options(repos = BiocInstaller::biocinstallRepos()); unloadNamespace('BiocInstaller') } else { options(repos = c('CRAN' = 'https://cran.rstudio.com', CRANextra = 'http://www.stats.ox.ac.uk/pub/RWin')) }" `
+  -Value "options(repos = BiocManager::repositories()); unloadNamespace('BiocManager')"`
+  -Path .Rprofile
+
+Add-Content `
+  -Value "if (getRversion() < '3.5.0') { options(repos = c(getOption('repos'), CRANextra = 'http://www.stats.ox.ac.uk/pub/RWin')) }" `
   -Path .Rprofile
 
 # --------------------------------------------------------------------
