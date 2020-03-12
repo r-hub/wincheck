@@ -60,7 +60,7 @@ mkdir R -ErrorAction SilentlyContinue | out-null
 $rhome = ( $home.replace('\', '/') + '/R' )
 
 Add-Content `
-  -Value "options(repos = structure(c(CRAN = 'https://cran2.r-pkg.org'))); .libPaths('$rhome')" `
+  -Value "options(repos = structure(c(CRAN = 'https://cloud.r-project.org'))); .libPaths('$rhome')" `
   -Path .Rprofile
 
 # A function to run R
