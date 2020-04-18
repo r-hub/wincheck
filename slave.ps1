@@ -29,9 +29,11 @@ $R = "C:\Program Files\R\R-${RVersion}\bin\R"
 If ($RVersion -eq "3.2.5") {
     $rpath = 'C:\Rtools33\bin;C:\Rtools\gcc-4.6.3\bin;' + $env:PATH
     $rbinpref = ''
-} Else {
+} ElseIf ($RVersion.Substring(0,1) -eq "3") {
     $rpath = 'C:\Rtools34\bin;' + $env:PATH
     $rbinpref = 'C:/Rtools34/mingw_$(WIN)/bin/'
+} Else {
+    $rpath = 'C:\rtools40\usr\bin;' + $env:PATH
 }
 
 # Hunspell (disguised as aspell)
@@ -99,7 +101,7 @@ function Run-R {
 
     # This is after setting user env vars, users cannot override it
     $StartInfo.EnvironmentVariables["PATH"] = $rpath
-    $StartInfo.EnvironmentVariables["BINPREF"] = $rbinpref
+    if (! $rbinpref -eq '') { $StartInfo.EnvironmentVariables["BINPREF"] = $rbinpref }
     $StartInfo.EnvironmentVariables["TMPDIR"] = ( $home + "\TEMP" )
 
     # Create new process
