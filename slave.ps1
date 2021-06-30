@@ -142,7 +142,7 @@ Write-Verbose "Adding BioC repositories..."
 Run-R "-q -e `"install.packages('BiocManager')`""
 
 Add-Content `
-  -Value "options(repos = BiocManager::repositories()); unloadNamespace('BiocManager')"`
+  -Value "try(options(repos = BiocManager::repositories())); try(unloadNamespace('BiocManager'))"`
   -Path .Rprofile
 
 Add-Content `
