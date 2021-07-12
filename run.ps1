@@ -91,6 +91,14 @@ Write-Verbose ( "Downloading " + $url )
 Invoke-WebRequest -Uri $url -OutFile ( $homefull + "\" + $package )
 
 # --------------------------------------------------------------------
+# R-devel CRAN binaries are x64 only, but the check is still multi-arch,
+# so it will fail if there is a dependency with compiled code.
+# Work around this by running it on x64 only
+If ($rversion -eq "r-devel") {
+    $checkArgs = $checkArgs + " --no-multiarch"
+}
+
+# --------------------------------------------------------------------
 # We need to pass these in temporary files, becuase it is hard
 # escape them, and if I pass them as environment variables, then
 # PowerShell will not use the specified user (!!!)
