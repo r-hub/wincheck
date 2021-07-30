@@ -178,7 +178,11 @@ Run-R "-q -e `"source('install-github.R')`$value('r-lib/remotes@r-hub')`""
 
 Write-Host ">>>>>============== Installing package dependencies"
 
-Run-R "-q -e `"remotes::install_deps('$Filename',dependencies=TRUE)`""
+If ($RVersion -eq "devel") {
+  Run-R "-q -e `"remotes::install_deps('$Filename',dependencies=TRUE,INSTALL_opts='--no-multiarch')`""
+} Else {
+  Run-R "-q -e `"remotes::install_deps('$Filename',dependencies=TRUE)`""
+}
 
 If ($RVersion -eq "devel") {
   Run-R "CMD INSTALL --no-multiarch --build $Filename"
