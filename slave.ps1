@@ -142,6 +142,7 @@ function Run-R {
 # --------------------------------------------------------------------
 Write-Verbose "Adding BioC repositories..."
 
+Run-R "-q -e `"dir.create(Sys.getenv('R_LIBS_USER'), showWarnings = FALSE, recursive = TRUE)`""
 Run-R "-q -e `"install.packages('BiocManager')`""
 
 Add-Content `
