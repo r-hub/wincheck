@@ -25,6 +25,9 @@ $R = "C:\Program Files\R\R-${RVersion}\bin\R"
 
 # Currently only 3.2.5 is special, and the rest use Rtools34 and
 # Jeroen's toolchain
+# For ucrt we still add c:\rtool40 to PATH, but it is not installed,
+# so it does not matter. (But it will be a problem when we'll start
+# using the same machine for UCRT and non-UCRT checks.)
 
 If ($RVersion -eq "3.2.5") {
     $rpath = 'C:\Rtools33\bin;C:\Rtools\gcc-4.6.3\bin;' + $env:PATH
@@ -62,7 +65,7 @@ mkdir R -ErrorAction SilentlyContinue | out-null
 $rhome = ( $home.replace('\', '/') + '/R' )
 
 Add-Content `
-  -Value "options(repos = structure(c(CRAN = 'https://cloud.r-project.org'))); .libPaths('$rhome')" `
+  -Value "options(repos = unlist(utils::modifyList(as.list(getOption('repos')), list('CRAN' = 'https://cloud.r-project.org'))))" `
   -Path .Rprofile
 
 # A function to run R
