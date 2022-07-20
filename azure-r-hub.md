@@ -26,6 +26,11 @@
    restart.)
 1. Set the time zone. Originally it is set to UTC, and you can change it
    to anything you like.
+1. Install aspell and the en dictionary with Rtools42 pacman, from the
+   msys2 repo. Put it on the PATH.
+1. Set the `MIKTEX_ENV_EXCEPTION_PATH` system env var to point to
+   `c:\temp`, make sure it is writeable for everyone.
+   https://github.com/r-hub/rhub/issues/503
 1. Download the Jenkins client from
    https://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/swarm-client/2.2/ and place it in the rhub user's home.
 1. Get the wincheck scripts and put then in Documents:
